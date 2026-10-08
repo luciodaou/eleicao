@@ -2,13 +2,26 @@
 
 Variação de votos para Presidente, por seção eleitoral e por local de votação, entre o 1º e o 2º turno de 2022 e o 1º turno de 2026: Lula (13), Bolsonaro (22), demais candidatos, brancos, nulos e abstenção. O foco é encontrar padrões, por exemplo se a mudança de local de uma seção afetou a votação, e cruzar com o perfil do eleitorado e dados do IBGE.
 
-Os dados vêm do [Portal de Dados Abertos do TSE](https://dadosabertos.tse.jus.br) e do IBGE. As decisões de arquitetura estão em [docs/adr/](docs/adr/), e os dicionários de dados do TSE (`leiame`), em [docs/fontes/](docs/fontes/).
+## Dados
 
-## Eleição 2026
+Os dados vêm do [Portal de Dados Abertos do TSE](https://dadosabertos.tse.jus.br) e do IBGE.
+Os resultados de 2026 vêm do boletim de urna (`bweb_1t_<UF>_…`).
 
-Os resultados de 2026 vêm por ora do boletim de urna (`bweb_1t_<UF>_…`).
+## Excel
 
-## O banco
+O arquivo `v_secao_var_pp_22_26_1t.xlsx` traz 2 abas, cada uma com a comparação de cada turno da eleição de 2022 com o 1º turno da eleição de 2026.
+
+## Banco de dados .duckdb
+
+`eleicoes.duckdb` reúne, em três pleitos para Presidente (1º e 2º turno de 2022 e 1º turno de 2026), os resultados por seção eleitoral e por local de votação:
+
+- **Cobertura:** 5.758 municípios, cerca de 526 mil seções e 281 mil registros de local × pleito.
+- **Votos:** Lula, Bolsonaro (número 22), outros candidatos, brancos, nulos, abstenção, aptos e comparecimento.
+- **Locais:** nome, endereço, bairro e coordenadas, validadas contra a malha municipal do IBGE.
+- **Eleitorado:** perfil por seção (gênero, faixa etária, escolaridade, estado civil), e população municipal estimada para 2026.
+- **Variações:** views com a mudança de votos, em número absoluto e em pontos percentuais dos aptos, entre pleitos, e com a distância entre os locais de votação da mesma seção.
+
+## Parte técnica do Banco
 
 As tabelas são separadas por granularidade e ligadas por `secao_id = cd_municipio * 10^8 + nr_zona * 10^5 + nr_secao`, uma chave estável entre execuções e entre anos.
 
